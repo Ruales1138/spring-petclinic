@@ -17,7 +17,16 @@ stage('Maven Install') {
 stage('Docker Build') {
     agent any
     steps {
-    sh 'docker build -t <docker-username>/spring-petclinic:gestion-udem-jenkins .'
+    sh 'docker build -t ruales1138/spring-petclinic:gestion-udem-jenkins .'
+    }
+}
+stage('Docker Push') {
+    agent any
+    steps {
+    withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+        sh 'echo "$dockerHubPassword" | docker login --username "$dockerHubUser" --password-stdin'
+        sh 'docker push ruales1138/spring-petclinic:gestion-udem-jenkins'
+    }
     }
 }
 }
